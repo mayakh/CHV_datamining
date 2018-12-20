@@ -9,46 +9,91 @@ import xlsxwriter as xlwt
 import openpyxl
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
-import statsmodels.api as sm
 from scipy import stats
+import fileinput
 
+
+def sort_patient_age(df1):
+    # get patients birthdate
+    age_list = list(df1['Age'])
+    age = np.zeros(len(age_list))
+    for j in range(len(age_list)):
+        print(str(age_list[j]))
+        if "an" in age_list[j]:
+            a_index = str(age_list[j]).index('a')
+            age[j] = age_list[j][0:a_index-1]
+            print(int(age[j]))
+        else:
+            age[j] = 0
+            print(age[j])
+
+    # birthdate = np.zeros((len(df1[df1.columns[5]].values), 1))
+    nind = np.zeros([9])
+    # count number of age group occurrence
+    for i in range(len(age)):
+        if age[i]<10:
+            nind[0] = nind[0]+1
+        elif age[i]<20:
+            nind[1] = nind[1]+1
+        elif age[i]<30:
+            nind[2] = nind[2]+1
+        elif age[i] < 40:
+            nind[3] = nind[3] + 1
+        elif age[i] < 50:
+            nind[4] = nind[4] + 1
+        elif age[i] < 60:
+            nind[5] = nind[5] + 1
+        elif age[i] < 70:
+            nind[6] = nind[6] + 1
+        elif age[i] < 80:
+            nind[7] = nind[7] + 1
+        else:
+            nind[8] = nind[8] + 1
+    print(nind)
 
 
 def sort_indications(df1):
     # Load a sheet into a DataFrame by name: df1
-    #df1 = xl.parse('radio jan-juin18 - Copie')
-    indic = np.unique(df1.Examens).tolist()
-    nind = np.zeros(len(indic))
+    #df1 = xl.parse('radio jan-juin18 - Copie')g
+    indic = list(df1['Examen(s)'])
+    indic_u = list(np.unique(indic))
+    nind = np.zeros(len(indic_u))
     # count number of indicated exam occurrence
-    for i in range(len(df1.Examens)):
-        for j in indic:
-            if df1.Examens[i] == j:
-                nind[indic.index(j)] = nind[indic.index(j)]+1
-    fig, ax = plt.subplots()
-    plt.bar(range(len(indic)), nind)
-    plt.ylabel('Number of occurrences')
-    plt.xticks(range(len(indic)))
-    plt.show()
-    fig.savefig('/Users/mayakhalife/Documents/CHV_RIS/MSK/MSKindications.svg')   # save the figure to file
-    df2 = pd.DataFrame({'Indications': indic})
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter('/Users/mayakhalife/Documents/CHV_RIS/MSK/MSKindications.xlsx', engine='xlsxwriter')
-    # Convert the dataframe to an XlsxWriter Excel object.
-    df2.to_excel(writer, sheet_name='Sheet1')
-    # Close the Pandas Excel writer and output the Excel file.
-    writer.save()
+    for i in range(len(indic)):
+        if 'Genou 1 ou 2 incidences' in indic[i]:
+            nind[0] = nind[0]+1
+            print(indic[i])
 
-def sort_patient_age(df1):
+    print(nind)
+    print(indic_u)
+    print(len(indic_u))
+    # fig, ax = plt.subplots()
+    # plt.bar(range(len(indic)), nind)
+    # plt.ylabel('Number of occurrences')
+    # plt.xticks(range(len(indic)))
+    # plt.show()
+    # fig.savefig('/Users/mayak./Documents/CHV_RIS/MSK/MSKindications.svg')   # save the figure to file
+    # df2 = pd.DataFrame({'Indications': indic})
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    # writer = pd.ExcelWriter('/Users/mayak./Documents/CHV_RIS/MSK/MSKindications.xlsx', engine='xlsxwriter')
+    # Convert the dataframe to an XlsxWriter Excel object.
+    # df2.to_excel(writer, sheet_name='Sheet1')
+    # Close the Pandas Excel writer and output the Excel file.
+    # writer.save()
+
+
+def sort_patient_sex(df1):
     # get patients birthdate
-    birthdate = np.zeros((len(df1[df1.columns[5]].values), 1))
-    for i in range(len(df1[df1.columns[5]].values)):
-        bd = df1[df1.columns[5]].values[i]
-        bd = pd.to_datetime(bd)
-        birthdate[i] = 2018 - bd.year
-    fig, ax = plt.subplots()
-    plt.bar(range(len(df1[df1.columns[5]].values)), birthdate)
-    plt.ylabel('Number of occurrences')
-    plt.show()
+    sex_list = list(df1['Sexe'])
+    # print(sex_list.dtype)
+    nind = np.zeros(2)
+    for j in range(len(sex_list)):
+        if sex_list[j] == 'M':
+            nind[0] = nind[0]+1
+        else:
+            nind[1] = nind[1]+1
+    print(nind)
+
 
 def sort_rooms(df1):
     # get Xray room/scanner
@@ -67,13 +112,13 @@ def sort_rooms(df1):
 def main():
     """Main"""
     # Assign spreadsheet filename to `file`
-    filename_ = '/Users/mayakhalife/Documents/CHV_RIS/MSK/msk_toutes_salle_radio_2017-2018.xlsx'
+    filename_ = '/Users/mayak./Documents/CHV_RIS/MSK/msk_toutes_salle_radio_2017-2018.xlsx'
 
     # Load spreadsheet
-    df1 = pd.read_excel(filename_, dtype={'Name': str, 'Value': str}, skiprows=[0, 1, 2])
-    # sort_indications(df1)
+    df1 = pd.read_excel(filename_)
+    sort_indications(df1)
     # sort_patient_age(df1)
-    sort_rooms(df1)
-
+    # sort_rooms(df1)
+    # sort_patient_sex(df1)
 if __name__ == '__main__':
     main()
