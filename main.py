@@ -53,55 +53,29 @@ def sort_indications(df1):
     # Load a sheet into a DataFrame by name: df1
     #df1 = xl.parse('radio jan-juin18 - Copie')g
     indic = list(df1['Examen(s)'])
-    indic_u = list(np.unique(indic))
-    nind = np.zeros([20])
+    # indic_u = list(np.unique(indic))
     # create a shortlist
+    slist = ['Genou', 'Coude', 'Main', 'Poignet', 'Hanche', 'Pied', 'Jambe', 'Calcaneum', 'Cheville', 'Femur',
+            'Rachis', 'Humerus', 'Bassin', 'Articulation', 'Avant-bras', 'scapulaire', 'Opn', 'Sternum',
+            'segments du membre inf', 'segments du membre sup', 'Arthrographie', 'pulmonaire', 'paule']
+    nind = np.zeros(len(slist))
+
+    k = 0
     dpt = list(df1['UF   Demandeur'])
     # count number of indicated exam occurrence
     for i in range(len(indic)):
         if dpt[i] == '0991 URGENCES':
-            if 'Genou' in indic[i]:
-                nind[0] = nind[0]+1
-            elif 'Coude' in indic[i]:
-                nind[1] = nind[1]+1
-            elif 'Main' in indic[i]:
-                nind[2] = nind[2] + 1
-            elif 'Poignet' in indic[i]:
-                nind[3] = nind[3] + 1
-            elif 'Hanche' in indic[i]:
-                nind[4] = nind[4] + 1
-            elif 'Pied' in indic[i]:
-                nind[5] = nind[5] + 1
-            elif 'Jambe' in indic[i]:
-                nind[6] = nind[6] + 1
-            elif 'Calcaneum' in indic[i]:
-                nind[7] = nind[7] + 1
-            elif 'Cheville' in indic[i]:
-                nind[8] = nind[8] + 1
-            elif 'Femur' in indic[i]:
-                nind[9] = nind[9] + 1
-            elif 'Rachis' in indic[i]:
-                nind[10] = nind[10] + 1
-            elif 'Humerus' in indic[i]:
-                nind[11] = nind[11] + 1
-            elif 'Bassin' in indic[i]:
-                nind[12] = nind[12] + 1
-            elif 'membre inf' in indic[i]:
-                nind[13] = nind[13] + 1
-            elif 'membre sup' in indic[i]:
-                nind[14] = nind[14] + 1
-            elif 'Articulation' in indic[i]:
-                nind[15] = nind[15] + 1
-            elif 'Avant-bras' in indic[i]:
-                nind[16] = nind[16] + 1
-            elif 'scapulaire' in indic[i]:
-                nind[17] = nind[17] + 1
-            elif 'Opn' in indic[i]:
-                nind[18] = nind[18] + 1
-            elif 'Sternum' in indic[i]:
-                nind[19] = nind[19] + 1
+            k = k + 1
+            fl = 0
+            for j in range(len(slist)):
+                if (slist[j] in indic[i]) and (fl == 0):
+                    nind[j] = nind[j]+1
+                    fl = 1
+
+    print(k)
+    print(slist)
     print(nind)
-    print(indic_u)
+
     # print(len(indic_u))
     # fig, ax = plt.subplots()
     # plt.bar(range(len(indic)), nind)
